@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Login | CampusFind{% endblock %}
+
+{% block content %}
+<section class="auth-page">
+    <div class="auth-showcase">
+        <a class="auth-brand" href="{{ url_for('home') }}">
+            <span class="brand-mark">CF</span>
+            <strong>CampusFind</strong>
+        </a>
+        <div class="auth-illustration">
+            <div class="illustration-orbit orbit-one"></div>
+            <div class="illustration-orbit orbit-two"></div>
+            <div class="illustration-box">🔎</div>
+            <div class="illustration-item item-one">🎧</div>
+            <div class="illustration-item item-two">🎒</div>
+            <div class="illustration-item item-three">🪪</div>
+        </div>
+        <div class="auth-showcase-copy">
+            <div class="eyebrow">CAMPUSFIND</div>
+            <h1>Find what was lost.<br>Return what was found.</h1>
+            <p>One secure place for campus lost-and-found reports, claims and verification.</p>
+        </div>
+    </div>
+
+    <div class="auth-panel">
+        <div class="auth-top">
+            <button id="auth-theme-toggle" class="icon-button" type="button">🌙</button>
+        </div>
+        <div class="auth-form-wrap">
+            <div class="eyebrow">WELCOME BACK</div>
+            <h2>Welcome Back 👋</h2>
+            <p class="auth-subtitle">Login to manage your campus lost-and-found activity.</p>
+
+            <form method="POST" class="auth-form">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="you@example.com" required autocomplete="email">
+                </div>
+
+                <div class="form-group">
+                    <div class="label-row">
+                        <label for="password">Password</label>
+                    </div>
+                    <div class="password-wrap">
+                        <input type="password" id="password" name="password" placeholder="Enter your password" required autocomplete="current-password">
+                        <button type="button" class="password-toggle" data-target="password">👁</button>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary auth-submit" type="submit">Login <span>→</span></button>
+            </form>
+
+            <p class="auth-footer">Don't have an account? <a href="{{ url_for('register') }}">Create Account</a></p>
+
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% block title %}CampusFind | Smart Campus Lost & Found{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="hero-copy">
+        <div class="eyebrow">SMART CAMPUS LOST & FOUND</div>
+        <h1>Lost something?<br><span>Let's help you find it.</span></h1>
+        <p>
+            CampusFind digitizes the campus lost-and-found process so students
+            can report, search, claim and safely recover their belongings.
+        </p>
+        <div class="hero-actions">
+            {% if current_user %}
+                <a class="btn btn-primary" href="{{ url_for('report_item', item_type='lost') }}">Report Lost Item</a>
+                <a class="btn btn-secondary" href="{{ url_for('report_item', item_type='found') }}">Report Found Item</a>
+            {% else %}
+                <a class="btn btn-primary" href="{{ url_for('register') }}">Get Started</a>
+                <a class="btn btn-secondary" href="{{ url_for('found_items') }}">Browse Found Items</a>
+            {% endif %}
+        </div>
+        <div class="hero-trust">
+            <span>🔐 Verified claims</span>
+            <span>📍 Campus-focused</span>
+            <span>🔔 Status notifications</span>
+        </div>
+    </div>
+
+    <div class="hero-visual">
+        <div class="search-visual">
+            <div class="search-circle">🔎</div>
+            <h3>Find your belongings</h3>
+            <p>Search reports by item, category and location.</p>
+            <form class="mini-search-form" action="{{ url_for('found_items') }}" method="GET">
+                <input type="text" name="search" placeholder="Search campus items" aria-label="Search campus items">
+                <button type="submit" aria-label="Search">→</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="section-heading">
+        <div class="eyebrow">HOW IT WORKS</div>
+        <h2>Find it. Claim it. Return it.</h2>
+        <p>A simple digital workflow built around the way campus lost-and-found actually works.</p>
+    </div>
+
+    <div class="feature-grid">
+        {% if current_user %}
+            <a class="feature-card feature-link" href="{{ url_for('dashboard') }}">
+        {% else %}
+            <a class="feature-card feature-link" href="{{ url_for('login') }}">
+        {% endif %}
+            <div class="feature-icon">📝</div>
+            <h3>Report</h3>
+            <p>Report an item you lost or an item you found with useful campus details.</p>
+            <span class="feature-action">Open →</span>
+        </a>
+        <a class="feature-card feature-link" href="{{ url_for('found_items') }}">
+            <div class="feature-icon">🔎</div>
+            <h3>Search</h3>
+            <p>Browse found items and search by category, description and location.</p>
+            <span class="feature-action">Search →</span>
+        </a>
+        {% if current_user and current_user["role"] in ["admin", "hod"] %}
+            <a class="feature-card feature-link" href="{{ url_for('admin_claims') }}">
+            <div class="feature-icon">🔐</div>
+            <h3>Verify</h3>
+            <p>Compare private ownership details and verify genuine claims.</p>
+            <span class="feature-action">Review claims →</span>
+            </a>
+            <a class="feature-card feature-link" href="{{ url_for('admin_claims') }}">
+            <div class="feature-icon">🤝</div>
+            <h3>Return</h3>
+            <p>Mark an item ready for collection and record the final return.</p>
+            <span class="feature-action">Manage returns →</span>
+            </a>
+        {% else %}
+            <a class="feature-card feature-link" href="{{ url_for('login') }}">
+            <div class="feature-icon">🔐</div>
+            <h3>Verify</h3>
+            <p>Private verification information stays hidden from public viewers.</p>
+            <span class="feature-action">Login →</span>
+            </a>
+            <a class="feature-card feature-link" href="{{ url_for('login') }}">
+            <div class="feature-icon">🤝</div>
+            <h3>Return</h3>
+            <p>Admins verify ownership and mark the item returned after physical collection.</p>
+            <span class="feature-action">Admin login →</span>
+            </a>
+        {% endif %}
+    </div>
+</section>
+
+<section class="section soft-section">
+    <div class="section-heading left">
+        <div class="eyebrow">RECENTLY FOUND</div>
+        <h2>Could one of these be yours?</h2>
+        <p>Only safe public preview information is shown here.</p>
+    </div>
+
+    {% if found_items %}
+        <div class="item-grid">
+            {% for item in found_items %}
+                {% include "_item_card.html" %}
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <div>📦</div>
+            <h3>No found items yet</h3>
+            <p>Found reports will appear here when students start using CampusFind.</p>
+        </div>
+    {% endif %}
+</section>
+{% endblock %}

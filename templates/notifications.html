@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Notifications | CampusFind{% endblock %}
+
+{% block content %}
+<section class="page-shell narrow">
+    <div class="page-heading-row">
+        <div><div class="eyebrow">UPDATES</div><h1>Notifications</h1><p>Claim and verification updates appear here.</p></div>
+    </div>
+
+    {% if notifications %}
+    <div class="notification-list">
+        {% for note in notifications %}
+        <article class="notification-card {% if not note['is_read'] %}unread{% endif %}">
+            <div class="notification-icon">🔔</div>
+            <div><strong>{{ note["title"] }}</strong><p>{{ note["message"] }}</p><small>{{ note["created_at"] }}</small></div>
+        </article>
+        {% endfor %}
+    </div>
+    {% else %}
+        <div class="empty-state"><div>🔔</div><h3>You're all caught up</h3><p>No notifications yet.</p></div>
+    {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,224 @@
+{% extends "base.html" %}
+{% block title %}Verify Claims | CampusFind{% endblock %}
+
+{% block content %}
+<section class="page-shell">
+
+    <div class="page-heading-row">
+        <div>
+            <div class="eyebrow">ADMIN / VERIFICATION</div>
+            <h1>Review Claim Requests</h1>
+            <p>Compare the claimant's information with private verification details.</p>
+        </div>
+    </div>
+
+    <!-- SEARCH -->
+    <form method="GET"
+          action="{{ url_for('admin_claims') }}"
+          class="panel"
+          style="display:flex;gap:10px;align-items:center;margin-bottom:24px;">
+
+        {% if view %}
+            <input type="hidden" name="view" value="{{ view }}">
+        {% endif %}
+
+        <input
+            type="text"
+            name="search"
+            value="{{ search }}"
+            placeholder="Search by item, claimant, roll number or category..."
+            style="flex:1;"
+        >
+
+        <button type="submit" class="btn btn-primary">
+            🔍 Search
+        </button>
+
+        {% if search %}
+            <a
+                href="{{ url_for('admin_claims', view=view) }}"
+                class="btn btn-secondary">
+                Clear
+            </a>
+        {% endif %}
+
+    </form>
+
+
+    {% if search %}
+        <p style="margin-bottom:18px;">
+            Search results for:
+            <strong>{{ search }}</strong>
+        </p>
+    {% endif %}
+
+
+    {% if claims %}
+
+    <div class="admin-claims">
+
+        {% for claim in claims %}
+
+        <article class="verification-card">
+
+            <div class="verification-card-top">
+
+                <div>
+                    <span class="item-category">
+                        {{ claim["category"] }}
+                    </span>
+
+                    <h2>{{ claim["title"] }}</h2>
+
+                    <p>
+                        Claimant:
+                        <strong>{{ claim["claimant_name"] }}</strong>
+                        · {{ claim["roll_no"] }}
+                        · {{ claim["department"] }}
+                    </p>
+                </div>
+
+                <span class="status-badge status-{{ claim['status']|lower|replace(' ', '-') }}">
+                    {{ claim["status"] }}
+                </span>
+
+            </div>
+
+
+            <div class="verification-grid">
+
+                <div>
+                    <h4>Claimant's information</h4>
+
+                    <p>
+                        <strong>Lost location:</strong>
+                        {{ claim["lost_location"] }}
+                    </p>
+
+                    <p>
+                        <strong>Date:</strong>
+                        {{ claim["lost_date"] }}
+                    </p>
+
+                    <p>
+                        <strong>Time:</strong>
+                        {{ claim["lost_time"] or "Not provided" }}
+                    </p>
+
+                    <div class="private-text claimant-detail">
+                        {{ claim["ownership_details"] }}
+                    </div>
+                </div>
+
+
+                <div>
+                    <h4>Private finder verification</h4>
+
+                    <div class="private-text">
+                        {{ claim["verification_details"] }}
+                    </div>
+
+                    {% if claim["private_image"] %}
+
+                        <a
+                            class="private-image-link"
+                            target="_blank"
+                            href="{{ url_for('private_verification', filename=claim['private_image']) }}">
+                            🔐 Open private verification image
+                        </a>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            {% if claim["admin_note"] %}
+
+                <div class="admin-note">
+                    <strong>Previous note:</strong>
+                    {{ claim["admin_note"] }}
+                </div>
+
+            {% endif %}
+
+
+            <form
+                method="POST"
+                action="{{ url_for('update_claim_status', claim_id=claim['id']) }}"
+                class="review-form">
+
+                <input type="hidden" name="view" value="{{ view }}">
+
+                <textarea
+                    name="admin_note"
+                    rows="2"
+                    placeholder="Optional admin note for the claimant"></textarea>
+
+                <div class="review-actions">
+
+                    <button
+                        class="btn btn-muted"
+                        name="status"
+                        value="Under Verification">
+                        Under Verification
+                    </button>
+
+                    <button
+                        class="btn btn-primary"
+                        name="status"
+                        value="Approved">
+                        Approve
+                    </button>
+
+                    <button
+                        class="btn btn-secondary"
+                        name="status"
+                        value="Ready for Collection">
+                        Ready for Collection
+                    </button>
+
+                    <button
+                        class="btn btn-danger"
+                        name="status"
+                        value="Rejected">
+                        Reject
+                    </button>
+
+                    <button
+                        class="btn btn-success"
+                        name="status"
+                        value="Returned">
+                        Mark Returned
+                    </button>
+
+                </div>
+
+            </form>
+
+        </article>
+
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+
+        <div class="empty-state">
+            <div>🎯</div>
+
+            {% if search %}
+                <h3>No matching claims found</h3>
+                <p>Try searching with a different item name, claimant name, roll number or category.</p>
+            {% else %}
+                <h3>No claims to review</h3>
+                <p>New claim requests will appear here.</p>
+            {% endif %}
+
+        </div>
+
+    {% endif %}
+
+</section>
+{% endblock %}

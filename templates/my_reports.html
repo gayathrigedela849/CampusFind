@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}My Reports | CampusFind{% endblock %}
+
+{% block content %}
+<section class="page-shell">
+    <div class="page-heading-row">
+        <div>
+            <div class="eyebrow">MY REPORTS</div>
+            <h1>Your reported items.</h1>
+            <p>Keep track of everything you have reported.</p>
+        </div>
+
+        <div class="quick-actions">
+            <a class="btn btn-primary"
+               href="{{ url_for('report_item', item_type='lost') }}">
+                + Lost
+            </a>
+
+            <a class="btn btn-secondary"
+               href="{{ url_for('report_item', item_type='found') }}">
+                + Found
+            </a>
+        </div>
+    </div>
+
+    {% if reports %}
+    <div class="table-card">
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Type</th>
+                        <th>Location</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                {% for item in reports %}
+                    <tr>
+                        <td>
+                            <a class="table-link"
+                               href="{{ url_for('item_detail', item_id=item['id']) }}">
+                                {{ item["title"] }}
+                            </a>
+                            <small>{{ item["category"] }}</small>
+                        </td>
+
+                        <td>
+                            <span class="type-pill">
+                                {{ item["item_type"]|capitalize }}
+                            </span>
+                        </td>
+
+                        <td>{{ item["location"] }}</td>
+
+                        <td>{{ item["item_date"] }}</td>
+
+                        <td>
+                            <span class="status-badge status-{{ item['status']|lower|replace(' ', '-') }}">
+                                {{ item["status"] }}
+                            </span>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {% else %}
+        <div class="empty-state">
+            <div>📝</div>
+            <h3>No reports yet</h3>
+            <p>Start by reporting an item you lost or found.</p>
+        </div>
+    {% endif %}
+</section>
+{% endblock %}

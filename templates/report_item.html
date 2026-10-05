@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+{% block title %}Report {{ item_type|capitalize }} | CampusFind{% endblock %}
+
+{% block content %}
+<section class="page-shell narrow">
+    <div class="form-page-header">
+        <div class="eyebrow">REPORT {{ item_type|upper }}</div>
+        <h1>Tell us about the {{ item_type }} item.</h1>
+        <p>Provide enough information for students and admins to identify the report safely.</p>
+    </div>
+
+    <form method="POST" enctype="multipart/form-data" class="large-form panel">
+
+        <div class="form-section">
+            <h2>Item information</h2>
+
+            <div class="two-col">
+
+                <div class="form-group">
+                    <label>Item Name</label>
+                    <input
+                        type="text"
+                        name="title"
+                        value="{{ form_data.get('title', '') if form_data else '' }}"
+                        placeholder="e.g. Blue wallet"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label>Category</label>
+
+                    {% set saved_category = form_data.get('category', '') if form_data else '' %}
+
+                    <select name="category" required>
+                        <option value="">Select category</option>
+                        <option value="Electronics" {% if saved_category == "Electronics" %}selected{% endif %}>Electronics</option>
+                        <option value="ID Card" {% if saved_category == "ID Card" %}selected{% endif %}>ID Card</option>
+                        <option value="Wallet" {% if saved_category == "Wallet" %}selected{% endif %}>Wallet</option>
+                        <option value="Keys" {% if saved_category == "Keys" %}selected{% endif %}>Keys</option>
+                        <option value="Bag" {% if saved_category == "Bag" %}selected{% endif %}>Bag</option>
+                        <option value="Books" {% if saved_category == "Books" %}selected{% endif %}>Books</option>
+                        <option value="Clothing" {% if saved_category == "Clothing" %}selected{% endif %}>Clothing</option>
+                        <option value="Accessories" {% if saved_category == "Accessories" %}selected{% endif %}>Accessories</option>
+                        <option value="Other" {% if saved_category == "Other" %}selected{% endif %}>Other</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <div class="form-group">
+                <label>Description</label>
+
+                <textarea
+                    name="description"
+                    rows="5"
+                    placeholder="Describe the item without revealing sensitive verification details."
+                    required
+                >{{ form_data.get('description', '') if form_data else '' }}</textarea>
+            </div>
+
+            <div class="two-col">
+
+                <div class="form-group">
+                    <label>Location</label>
+
+                    <input
+                        type="text"
+                        name="location"
+                        value="{{ form_data.get('location', '') if form_data else '' }}"
+                        placeholder="Where was it lost/found?"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label>Date</label>
+
+                    <input
+                        type="date"
+                        name="item_date"
+                        value="{{ form_data.get('item_date', '') if form_data else '' }}"
+                        required
+                    >
+                </div>
+
+            </div>
+
+            <div class="form-group">
+                <label>Approximate Time</label>
+
+                <input
+                    type="time"
+                    name="item_time"
+                    value="{{ form_data.get('item_time', '') if form_data else '' }}"
+                >
+            </div>
+
+        </div>
+
+        <div class="form-section">
+            <h2>Public preview</h2>
+
+            <p class="form-help">
+                This image can be visible to students browsing found items.
+                Avoid unique marks that a fake claimant could copy.
+            </p>
+
+            <div class="file-input">
+                <input
+                    type="file"
+                    name="public_image"
+                    accept=".jpg,.jpeg,.png,.webp"
+                >
+            </div>
+        </div>
+
+        {% if item_type == "found" %}
+
+        <div class="verification-box">
+
+            <div class="verification-title">
+                🔐 Private verification information
+            </div>
+
+            <p>
+                Only admins/HODs can access this information.
+                Add a unique detail such as an engraving, scratch,
+                sticker, serial marking or other proof of ownership.
+            </p>
+
+            <div class="form-group">
+                <label>Unique Verification Details</label>
+
+                <textarea
+                    name="verification_details"
+                    rows="4"
+                    placeholder="Example: Small blue sticker inside the left earbud case near the hinge."
+                >{{ form_data.get('verification_details', '') if form_data else '' }}</textarea>
+            </div>
+
+            <div class="form-group">
+                <label>
+                    Private Verification Image
+                    <span class="optional-label">(recommended)</span>
+                </label>
+
+                <input
+                    type="file"
+                    name="private_image"
+                    accept=".jpg,.jpeg,.png,.webp"
+                >
+            </div>
+
+        </div>
+
+        {% endif %}
+
+        <div class="form-actions">
+            <a class="btn btn-secondary" href="{{ url_for('dashboard') }}">
+                Cancel
+            </a>
+
+            <button class="btn btn-primary" type="submit">
+                Submit {{ item_type|capitalize }} Report
+            </button>
+        </div>
+
+    </form>
+</section>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Found Items | CampusFind{% endblock %}
+
+{% block content %}
+<section class="page-shell">
+    <div class="page-heading-row">
+        <div>
+            <div class="eyebrow">FOUND ITEMS</div>
+            <h1>Search what has been found.</h1>
+            <p>Public previews only. Ownership is verified privately before return.</p>
+        </div>
+    </div>
+
+    <form class="search-panel" method="GET">
+        <div class="search-field">
+            <span>🔎</span>
+            <input type="text" name="search" value="{{ search }}" placeholder="Search item, category, description or location...">
+        </div>
+        <select name="category">
+            <option value="">All categories</option>
+            {% for category in categories %}
+                <option value="{{ category['category'] }}" {% if selected_category == category['category'] %}selected{% endif %}>{{ category['category'] }}</option>
+            {% endfor %}
+        </select>
+        <button class="btn btn-primary" type="submit">Search</button>
+    </form>
+
+    {% if items %}
+        <div class="item-grid">
+            {% for item in items %}
+                {% include "_item_card.html" %}
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <div>🔎</div>
+            <h3>No matching found items</h3>
+            <p>Try another keyword, category or location.</p>
+        </div>
+    {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+{% block title %}Users | CampusFind{% endblock %}
+
+{% block content %}
+<section class="page-shell">
+
+    <div class="page-heading-row">
+        <div>
+            <div class="eyebrow">ADMIN / USERS</div>
+            {% if role == "hod" %}
+            <h1>HOD Accounts</h1>
+            <p>Create and manage HOD accounts.</p>
+            {% else %}
+            <h1>Registered Students</h1>
+            <p>View registered student accounts.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if role == "hod" and can_create_hod %}
+    <!-- CREATE HOD ACCOUNT -->
+    <div class="panel" style="margin-bottom:24px;">
+
+        <div style="margin-bottom:18px;">
+            <div class="eyebrow">STAFF MANAGEMENT</div>
+            <h2 style="margin:6px 0 4px;">Create HOD Account</h2>
+            <p style="margin:0;">
+                Create a secure login account for a college HOD.
+            </p>
+        </div>
+
+        <form method="POST" action="{{ url_for('create_staff_account') }}" class="form-grid">
+
+            <div class="form-group">
+                <label for="fullname">Full Name</label>
+                <input type="text" id="fullname" name="fullname" placeholder="Enter HOD full name" required>
+            </div>
+
+
+            <div class="form-group">
+                <label for="roll_no">Staff ID</label>
+                <input type="text" id="roll_no" name="roll_no" placeholder="Example: HOD001" required>
+            </div>
+
+
+            <div class="form-group">
+                <label for="department">Department</label>
+                <input type="text" id="department" name="department" placeholder="Example: CSE" required>
+            </div>
+
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="Enter HOD email" required>
+            </div>
+
+
+            <div class="form-group">
+                <label for="password">Password</label>
+
+                <div class="password-field">
+                    <input type="password" id="password" name="password" placeholder="Create login password"
+                        minlength="6" required>
+
+                    <button type="button" class="password-toggle" onclick="togglePassword('password', this)"
+                        aria-label="Show password">
+                        👁
+                    </button>
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <label>Role</label>
+                <input type="text" value="HOD" disabled>
+            </div>
+
+
+            <div style="grid-column:1/-1;">
+                <button type="submit" class="btn btn-primary">
+                    + Create HOD Account
+                </button>
+            </div>
+
+        </form>
+    </div>
+    {% endif %}
+
+
+    <!-- REGISTERED USERS -->
+    <div class="table-card">
+
+        <div class="table-wrap">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Roll Number</th>
+                        <th>Department</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Joined</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for user in users %}
+
+                    <tr>
+
+                        <td>
+                            <strong>{{ user["fullname"] }}</strong>
+                        </td>
+
+                        <td>
+                            {{ user["roll_no"] }}
+                        </td>
+
+                        <td>
+                            {{ user["department"] }}
+                        </td>
+
+                        <td>
+                            {{ user["email"] }}
+                        </td>
+
+                        <td>
+                            <span class="type-pill">
+                                {{ user["role"] }}
+                            </span>
+                        </td>
+
+                        <td>
+                            {{ user["created_at"][:10] }}
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</section>
+{% endblock %}

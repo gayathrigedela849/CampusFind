@@ -1,0 +1,234 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard | CampusFind{% endblock %}
+
+{% block content %}
+<section class="page-shell">
+
+    <div class="dashboard-header">
+        <div>
+            <div class="eyebrow">ADMIN / HOD CONTROL CENTER</div>
+            <h1>CampusFind Overview</h1>
+            <p>Review reports, verify ownership and manage returns.</p>
+        </div>
+
+        <div class="admin-badge">🔐 Admin Mode</div>
+    </div>
+
+
+    <div class="stats-grid seven">
+
+        <div class="stat-card" data-url="{{ url_for('admin_users') }}" onclick="window.location.href=this.dataset.url"
+            style="cursor: pointer;">
+
+            <span class="stat-icon">👥</span>
+
+            <div>
+                <strong>{{ stats.users }}</strong>
+                <small>Students</small>
+            </div>
+
+        </div>
+
+        <div class="stat-card" data-url="{{ url_for('admin_users', role='hod') }}"
+            onclick="window.location.href=this.dataset.url" style="cursor:pointer;">
+
+            <span class="stat-icon">🎓</span>
+
+            <div>
+                <strong>{{ stats.hods }}</strong>
+                <small>HODs</small>
+            </div>
+
+        </div>
+
+        <div class="stat-card" data-url="{{ url_for('admin_items', type='lost') }}"
+            onclick="window.location.href=this.dataset.url" style="cursor: pointer;">
+
+            <span class="stat-icon">📕</span>
+
+            <div>
+                <strong>{{ stats.lost }}</strong>
+                <small>Lost</small>
+            </div>
+
+        </div>
+
+
+        <div class="stat-card" data-url="{{ url_for('admin_items', type='found') }}"
+            onclick="window.location.href=this.dataset.url" style="cursor: pointer;">
+
+            <span class="stat-icon">📦</span>
+
+            <div>
+                <strong>{{ stats.found }}</strong>
+                <small>Found</small>
+            </div>
+
+        </div>
+
+
+        <div class="stat-card" data-url="{{ url_for('admin_claims') }}" onclick="window.location.href=this.dataset.url"
+            style="cursor: pointer;">
+
+            <span class="stat-icon">🎯</span>
+
+            <div>
+                <strong>{{ stats.claims }}</strong>
+                <small>Claims</small>
+            </div>
+
+        </div>
+
+
+        <div class="stat-card highlight" data-url="{{ url_for('admin_claims', view='pending') }}"
+            onclick="window.location.href=this.dataset.url" style="cursor: pointer;">
+
+            <span class="stat-icon">⏳</span>
+
+            <div>
+                <strong>{{ stats.pending }}</strong>
+                <small>Pending Review</small>
+            </div>
+
+        </div>
+
+
+        <div class="stat-card" data-url="{{ url_for('admin_claims', view='returned') }}"
+            onclick="window.location.href=this.dataset.url" style="cursor: pointer;">
+
+            <span class="stat-icon">🤝</span>
+
+            <div>
+                <strong>{{ stats.returned }}</strong>
+                <small>Returned</small>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="admin-tools">
+
+        <a href="{{ url_for('admin_items') }}">
+            <span>📦</span>
+
+            <div>
+                <strong>Manage Items</strong>
+                <small>Review all lost/found reports</small>
+            </div>
+
+            <b>→</b>
+        </a>
+
+
+        <a href="{{ url_for('admin_claims') }}">
+            <span>🎯</span>
+
+            <div>
+                <strong>Verify Claims</strong>
+                <small>Compare ownership details privately</small>
+            </div>
+
+            <b>→</b>
+        </a>
+
+
+        <a href="{{ url_for('admin_users') }}">
+            <span>👥</span>
+
+            <div>
+                <strong>Students</strong>
+                <small>View registered students</small>
+            </div>
+
+            <b>→</b>
+        </a>
+
+    </div>
+
+
+    <section class="panel">
+
+        <div class="panel-heading">
+
+            <div>
+                <h2>Recent Activity</h2>
+                <p>Latest reports across the campus.</p>
+            </div>
+
+            <a class="text-link" href="{{ url_for('admin_items') }}">
+                View all →
+            </a>
+
+        </div>
+
+
+        <div class="table-wrap">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Type</th>
+                        <th>Reporter</th>
+                        <th>Location</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+
+                <tbody>
+
+                    {% for item in recent_items %}
+
+                    <tr>
+
+                        <td>
+                            <strong>{{ item["title"] }}</strong>
+                            <small>{{ item["category"] }}</small>
+                        </td>
+
+                        <td>
+                            <span class="type-pill">
+                                {{ item["item_type"]|capitalize }}
+                            </span>
+                        </td>
+
+                        <td>
+                            {{ item["reporter_name"] }}
+                        </td>
+
+                        <td>
+                            {{ item["location"] }}
+                        </td>
+
+                        <td>
+                            <span class="status-badge status-{{ item['status']|lower|replace(' ', '-') }}">
+                                {{ item["status"] }}
+                            </span>
+                        </td>
+
+                    </tr>
+
+                    {% else %}
+
+                    <tr>
+                        <td colspan="5" class="table-empty">
+                            No activity yet.
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+</section>
+{% endblock %}

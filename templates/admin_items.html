@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Manage Items | CampusFind{% endblock %}
+
+{% block content %}
+<section class="page-shell">
+    <div class="page-heading-row">
+        <div>
+            <div class="eyebrow">ADMIN / ITEMS</div>
+
+            {% if item_type == "lost" %}
+            <h1>Lost Reports</h1>
+            <p>Review all reported lost items.</p>
+            {% elif item_type == "found" %}
+            <h1>Found Reports</h1>
+            <p>Review all reported found items.</p>
+            {% else %}
+            <h1>Manage Reports</h1>
+            <p>Review every lost and found report.</p>
+            {% endif %}
+        </div>
+    </div>
+    <div class="table-card">
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Type</th>
+                        <th>Reporter</th>
+                        <th>Location</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                    <tr>
+                        <td><strong>{{ item["title"] }}</strong><small>{{ item["category"] }}</small></td>
+                        <td><span class="type-pill">{{ item["item_type"]|capitalize }}</span></td>
+                        <td>{{ item["reporter_name"] }}<small>{{ item["reporter_email"] }}</small></td>
+                        <td>{{ item["location"] }}</td>
+                        <td>{{ item["item_date"] }}</td>
+                        <td><span class="status-badge status-{{ item['status']|lower|replace(' ', '-') }}">{{
+                                item["status"] }}</span></td>
+                        <td><a class="text-link" href="{{ url_for('item_detail', item_id=item['id']) }}">View →</a></td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="table-empty">No reports found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+{% endblock %}

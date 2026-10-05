@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% block title %}{{ item["title"] }} | CampusFind{% endblock %}
+
+{% block content %}
+<section class="page-shell">
+    <a class="back-link" href="{{ url_for('found_items') }}">
+        ← Back to Found Items
+    </a>
+
+    <div class="detail-layout">
+
+        <div class="detail-image">
+            {% if item["public_image"] %}
+            <img src="{{ url_for('static', filename='uploads/public/' + item['public_image']) }}"
+                alt="Public item preview">
+            {% else %}
+            <div class="detail-placeholder">📦</div>
+            {% endif %}
+        </div>
+
+        <div class="detail-content">
+
+            <div class="item-category">
+                {{ item["category"] }}
+            </div>
+
+            <h1>{{ item["title"] }}</h1>
+
+            <span class="status-badge status-{{ item['status']|lower|replace(' ', '-') }}">
+                {{ item["status"] }}
+            </span>
+
+            <p class="detail-description">
+                {{ item["description"] }}
+            </p>
+
+            <div class="detail-info-grid">
+                <div>
+                    <span>Location</span>
+                    <strong>📍 {{ item["location"] }}</strong>
+                </div>
+
+                <div>
+                    <span>Date</span>
+                    <strong>📅 {{ item["item_date"] }}</strong>
+                </div>
+
+                <div>
+                    <span>Time</span>
+                    <strong>🕐 {{ item["item_time"] or "Not provided" }}</strong>
+                </div>
+
+                <div>
+                    <span>Reported by</span>
+                    <strong>👤 {{ item["reporter_name"] }}</strong>
+                </div>
+            </div>
+
+            <div class="security-note">
+                🔐 <strong>Verification protected:</strong>
+                unique verification details are hidden from public viewers
+                and are checked by the admin during claim review.
+            </div>
+
+
+            <!-- DELETE REPORT -->
+            {% if current_user
+            and current_user["id"] == item["reporter_id"]
+            and not item_has_claim
+            and item["status"] not in [
+            "Returned",
+            "Ready for Collection",
+            "Claim Approved"
+            ]
+            %}
+
+            <form method="POST" action="{{ url_for('delete_report', item_id=item['id']) }}" onsubmit="return confirm(
+                        'Are you sure you want to permanently delete this report?\\n\\nThis action cannot be undone.'
+                    );" style="margin-top: 18px;">
+                <button type="submit" class="btn btn-danger full-btn">
+                    🗑️ Delete Report
+                </button>
+            </form>
+
+            {% endif %}
+
+
+            <!-- CLAIM SECTION -->
+            {% if current_user and item["item_type"] == "found" %}
+
+            {% if current_user["id"] != item["reporter_id"]
+            and item["status"] not in [
+            "Returned",
+            "Ready for Collection",
+            "Claim Approved"
+            ] %}
+
+            {% if existing_claim %}
+
+            <div class="claim-status-box">
+                <strong>Your claim:</strong>
+                {{ existing_claim["status"] }}
+
+                <a href="{{ url_for('my_claims') }}">
+                    Track claim →
+                </a>
+            </div>
+
+            {% else %}
+
+            <a class="btn btn-primary full-btn" href="{{ url_for('claim_item', item_id=item['id']) }}">
+                This is my item — Submit a Claim
+            </a>
+
+            {% endif %}
+
+            {% endif %}
+
+            {% else %}
+
+            {% if not current_user %}
+            <a class="btn btn-primary full-btn" href="{{ url_for('login') }}">
+                Login to submit a claim
+            </a>
+            {% endif %}
+
+            {% endif %}
+
+        </div>
+    </div>
+</section>
+{% endblock %}

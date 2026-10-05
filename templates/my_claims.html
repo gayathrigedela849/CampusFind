@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}My Claims | CampusFind{% endblock %}
+
+{% block content %}
+<section class="page-shell">
+    <div class="page-heading-row">
+        <div><div class="eyebrow">MY CLAIMS</div><h1>Track your claims.</h1><p>Follow every verification step until your item is returned.</p></div>
+    </div>
+
+    {% if claims %}
+        <div class="claims-list">
+            {% for claim in claims %}
+            <article class="claim-card">
+                <div class="claim-thumb">
+                    {% if claim["public_image"] %}
+                        <img src="{{ url_for('static', filename='uploads/public/' + claim['public_image']) }}" alt="Item">
+                    {% else %}📦{% endif %}
+                </div>
+                <div class="claim-main">
+                    <span class="item-category">{{ claim["category"] }}</span>
+                    <h2>{{ claim["title"] }}</h2>
+                    <p>Found at {{ claim["location"] }} · Claim submitted {{ claim["created_at"][:10] }}</p>
+                    {% if claim["admin_note"] %}
+                        <div class="admin-note"><strong>Admin note:</strong> {{ claim["admin_note"] }}</div>
+                    {% endif %}
+                </div>
+                <div class="claim-status">
+                    <span class="status-badge status-{{ claim['status']|lower|replace(' ', '-') }}">{{ claim["status"] }}</span>
+                    <small>Updated {{ claim["updated_at"][:10] }}</small>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state"><div>🎯</div><h3>No claims yet</h3><p>Browse found items and submit a claim if you recognize your belongings.</p><a class="btn btn-primary" href="{{ url_for('found_items') }}">Browse Found Items</a></div>
+    {% endif %}
+</section>
+{% endblock %}
